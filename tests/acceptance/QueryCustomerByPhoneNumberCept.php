@@ -1,4 +1,5 @@
 <?php
+//Added namespaces with Aliasing to fix "Class not found" error with CodeCeption
 use Step\Acceptance\CRMOperatorSteps as CRMOperator;
 use Step\Acceptance\CRMUserSteps as CRMUser;
 
