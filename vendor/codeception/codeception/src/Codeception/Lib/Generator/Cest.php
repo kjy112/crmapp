@@ -46,7 +46,7 @@ EOF;
         $namespace = rtrim( $this->settings['namespace'], '\\' );
         $ns = $this->getNamespaceHeader($namespace.'\\'.$this->name);
         $ns .= "use ".$this->settings['namespace'].'\\'.$actor.";";
-        
+
         return (new Template($this->template))
             ->place('name', $this->getShortClassName($this->name))
             ->place('namespace', $ns)

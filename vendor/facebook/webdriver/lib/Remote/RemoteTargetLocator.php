@@ -13,13 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver\Remote;
-
-use Facebook\WebDriver\WebDriverTargetLocator;
-use Facebook\WebDriver\WebDriverElement;
-use Facebook\WebDriver\WebDriverAlert;
-use Facebook\WebDriver\WebDriver;
-
 /**
  * Used to locate a given frame or window for RemoteWebDriver.
  */

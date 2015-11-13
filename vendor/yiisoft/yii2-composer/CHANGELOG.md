@@ -1,6 +1,13 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
+2.0.4 under development
+-----------------------
+
+- Bug #7735: Composer failed to install extensions with multiple base paths in "psr-4" autoload section (cebe)
+- Enh #2: Better error handling for the case when installer is unable to change permissions (dbavscc)
+
+
 2.0.3 March 01, 2015
 --------------------
 

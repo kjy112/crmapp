@@ -47,6 +47,21 @@ class Base
     }
 
     /**
+     * Generates a random digit, which cannot be $except
+     *
+     * @param int $except
+     * @return int
+     */
+    public static function randomDigitNot($except)
+    {
+        $result = self::numberBetween(0, 8);
+        if ($result >= $except) {
+            $result++;
+        }
+        return $result;
+    }
+
+    /**
      * Returns a random integer with 0 to $nbDigits digits.
      *
      * The maximum value returned is mt_getrandmax()
@@ -106,16 +121,18 @@ class Base
     }
 
     /**
-     * Returns a random number between $min and $max
+     * Returns a random number between $int1 and $int2 (any order)
      *
-     * @param integer $min default to 0
-     * @param integer $max defaults to 32 bit max integer, ie 2147483647
+     * @param integer $int1 default to 0
+     * @param integer $int2 defaults to 32 bit max integer, ie 2147483647
      * @example 79907610
      *
      * @return integer
      */
-    public static function numberBetween($min = 0, $max = 2147483647)
+    public static function numberBetween($int1 = 0, $int2 = 2147483647)
     {
+        $min = $int1 < $int2 ? $int1 : $int2;
+        $max = $int1 < $int2 ? $int2 : $int1;
         return mt_rand($min, $max);
     }
 
@@ -297,7 +314,20 @@ class Base
         } else {
             $array = str_split($string, 1);
         }
-        return join('', static::shuffleArray($array));
+        return implode('', static::shuffleArray($array));
+    }
+
+    private static function replaceWildcard($string, $wildcard = '#', $callback = 'static::randomDigit')
+    {
+        if (($pos = strpos($string, $wildcard)) === false) {
+            return $string;
+        }
+        for ($i = $pos, $last = strrpos($string, $wildcard, $pos) + 1; $i < $last; $i++) {
+            if ($string[$i] === $wildcard) {
+                $string[$i] = call_user_func($callback);
+            }
+        }
+        return $string;
     }
 
     /**
@@ -312,9 +342,11 @@ class Base
         // instead of using randomDigit() several times, which is slow,
         // count the number of hashes and generate once a large number
         $toReplace = array();
-        for ($i = 0, $count = strlen($string); $i < $count; $i++) {
-            if ($string[$i] === '#') {
-                $toReplace []= $i;
+        if (($pos = strpos($string, '#')) !== false) {
+            for ($i = $pos, $last = strrpos($string, '#', $pos) + 1; $i < $last; $i++) {
+                if ($string[$i] === '#') {
+                    $toReplace[] = $i;
+                }
             }
         }
         if ($nbReplacements = count($toReplace)) {
@@ -330,7 +362,7 @@ class Base
                 $string[$toReplace[$i]] = $numbers[$i];
             }
         }
-        $string = preg_replace_callback('/\%/u', 'static::randomDigitNotNull', $string);
+        $string = self::replaceWildcard($string, '%', 'static::randomDigitNotNull');
 
         return $string;
     }
@@ -343,17 +375,21 @@ class Base
      */
     public static function lexify($string = '????')
     {
-        return preg_replace_callback('/\?/u', 'static::randomLetter', $string);
+        return self::replaceWildcard($string, '?', 'static::randomLetter');
     }
 
     /**
-     * Replaces hash signs and question marks with random numbers and letters
+     * Replaces hash signs ('#') and question marks ('?') with random numbers and letters
+     * An asterisk ('*') is replaced with either a random number or a random letter
      *
      * @param  string $string String that needs to bet parsed
      * @return string
      */
     public static function bothify($string = '## ??')
     {
+        $string = self::replaceWildcard($string, '*', function () {
+            return mt_rand(0, 1) ? '#' : '?';
+        });
         return static::lexify(static::numerify($string));
     }
 
@@ -426,7 +462,7 @@ class Base
         // All A-F inside of [] become ABCDEF
         $regex = preg_replace_callback('/\[([^\]]+)\]/', function ($matches) {
             return '[' . preg_replace_callback('/(\w|\d)\-(\w|\d)/', function ($range) {
-                return join(range($range[1], $range[2]), '');
+                return implode(range($range[1], $range[2]), '');
             }, $matches[1]) . ']';
         }, $regex);
         // All [ABC] become B (or A or C)
@@ -470,13 +506,22 @@ class Base
     /**
      * Chainable method for making any formatter optional.
      *
-     * @param float $weight Set the probability of receiving a null value.
-     *                            "0" will always return null, "1" will always return the generator.
-     * @return Generator|DefaultGenerator
+     * @param float|integer $weight Set the probability of receiving a null value.
+     *                              "0" will always return null, "1" will always return the generator.
+     *                              If $weight is an integer value, then the same system works
+     *                              between 0 (always get false) and 100 (always get true).
+     * @return mixed|null
      */
     public function optional($weight = 0.5, $default = null)
     {
-        if (mt_rand() / mt_getrandmax() <= $weight) {
+        // old system based on 0.1 <= $weight <= 0.9
+        // TODO: remove in v2
+        if ($weight > 0 && $weight < 1 && mt_rand() / mt_getrandmax() <= $weight) {
+            return $this->generator;
+        }
+        
+        // new system with percentage
+        if (is_int($weight) && mt_rand(1, 100) <= $weight) {
             return $this->generator;
         }
 

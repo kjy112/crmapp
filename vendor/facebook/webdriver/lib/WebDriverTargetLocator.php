@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver;
-
 /**
  * Used to locate a given frame or window.
  */
@@ -41,7 +39,7 @@ interface WebDriverTargetLocator {
    * Switch the focus to another window by its handle.
    *
    * @param string $handle The handle of the window to be focused on.
-   * @return WebDriver Tge driver focused on the given window.
+   * @return WebDriver The driver focused on the given window.
    * @see WebDriver::getWindowHandles
    */
   public function window($handle);

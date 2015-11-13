@@ -3,7 +3,6 @@ namespace Codeception;
 
 use Codeception\Lib\ModuleContainer;
 use Codeception\Step\Meta;
-use Codeception\Util\Locator;
 
 abstract class Step
 {
@@ -107,13 +106,8 @@ abstract class Step
 
     protected function parseArgumentAsString($argument)
     {
-        if (is_object($argument)) {
-            if (method_exists($argument, '__toString')) {
-                return (string)$argument;
-            }
-            if (get_class($argument) == 'Facebook\WebDriver\WebDriverBy') {
-                return Locator::humanReadableString($argument);
-            }
+        if (is_object($argument) && method_exists($argument, '__toString')) {
+            return (string)$argument;
         }
         if (is_callable($argument, true)) {
             return 'lambda function';

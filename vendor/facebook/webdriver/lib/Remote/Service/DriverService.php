@@ -13,11 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver\Remote\Service;
-
-use Exception;
-use Facebook\WebDriver\Net\URLChecker;
-
 class DriverService {
 
   /**

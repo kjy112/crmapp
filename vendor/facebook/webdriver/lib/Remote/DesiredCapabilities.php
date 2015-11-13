@@ -13,15 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver\Remote;
-
-use Exception;
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Firefox\FirefoxDriver;
-use Facebook\WebDriver\Firefox\FirefoxProfile;
-use Facebook\WebDriver\WebDriverCapabilities;
-use Facebook\WebDriver\WebDriverPlatform;
-
 class DesiredCapabilities implements WebDriverCapabilities {
 
   private $capabilities;
@@ -195,17 +186,10 @@ class DesiredCapabilities implements WebDriverCapabilities {
    * @return DesiredCapabilities
    */
   public static function firefox() {
-    $caps = new DesiredCapabilities(array(
+    return new DesiredCapabilities(array(
       WebDriverCapabilityType::BROWSER_NAME => WebDriverBrowserType::FIREFOX,
       WebDriverCapabilityType::PLATFORM => WebDriverPlatform::ANY,
     ));
-
-    // disable the "Reader View" help tooltip, which can hide elements in the window.document
-    $profile = new FirefoxProfile();
-    $profile->setPreference('reader.parse-on-load.enabled', false);
-    $caps->setCapability(FirefoxDriver::PROFILE, $profile);
-
-    return $caps;
   }
 
   /**

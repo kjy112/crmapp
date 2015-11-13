@@ -1293,40 +1293,11 @@ abstract class TestsForWeb extends \PHPUnit_Framework_TestCase
         $this->assertEquals('this & that', $form['name']);
     }
 
-    public function testSeeInDeactivatedField()
-    {
-        $this->module->amOnPage('/form/complex');
-        $this->module->seeInField('#disabled_field', 'disabled_field');
-        $this->module->seeInField('#salutation', 'mr');
-    }
-
     public function testSwitchToIframe()
     {
         $this->module->amOnPage('/iframe');
         $this->module->switchToIframe('content');
         $this->module->see('Is that interesting?');
         $this->module->click('Ссылочка');
-    }
-    
-    public function testGrabMultiple()
-    {
-        $this->module->amOnPage('/info');
-        
-        $arr = $this->module->grabMultiple('#grab-multiple a:first-child');
-        $this->assertCount(1, $arr);
-        $this->assertEquals('First', $arr[0]);
-        
-        $arr = $this->module->grabMultiple('#grab-multiple a');
-        $this->assertCount(3, $arr);
-        $this->assertEquals('First', $arr[0]);
-        $this->assertEquals('Second', $arr[1]);
-        $this->assertEquals('Third', $arr[2]);
-        
-        // href for WebDriver with selenium returns a full link, so testing with ID
-        $arr = $this->module->grabMultiple('#grab-multiple a', 'id');
-        $this->assertCount(3, $arr);
-        $this->assertEquals('first-link', $arr[0]);
-        $this->assertEquals('second-link', $arr[1]);
-        $this->assertEquals('third-link', $arr[2]);
     }
 }

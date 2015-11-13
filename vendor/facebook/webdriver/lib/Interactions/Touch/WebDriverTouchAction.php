@@ -13,11 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver\Interactions\Touch;
-
-use Facebook\WebDriver\Internal\WebDriverLocatable;
-use Facebook\WebDriver\Interactions\Internal\WebDriverCoordinates;
-
 /**
  * Base class for all touch-related actions.
  */

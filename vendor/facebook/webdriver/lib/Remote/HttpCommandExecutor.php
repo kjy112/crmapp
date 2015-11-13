@@ -13,13 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver\Remote;
-
-use Facebook\WebDriver\Exception\WebDriverException;
-use Facebook\WebDriver\WebDriverCommandExecutor;
-use InvalidArgumentException;
-use BadMethodCallException;
-
 /**
  * Command executor talking to the standalone server via HTTP.
  */
@@ -117,19 +110,10 @@ class HttpCommandExecutor implements WebDriverCommandExecutor {
 
   /**
    * @param string $url
-   * @param string|null $http_proxy
-   * @param int|null $http_proxy_port
    */
-  public function __construct($url, $http_proxy = null, $http_proxy_port = null) {
+  public function __construct($url) {
     $this->url = $url;
     $this->curl = curl_init();
-
-    if (!empty($http_proxy)) {
-      curl_setopt($this->curl, CURLOPT_PROXY, $http_proxy);
-      if (!empty($http_proxy_port)) {
-        curl_setopt($this->curl, CURLOPT_PROXYPORT, $http_proxy_port);
-      }
-    }
 
     // Get credentials from $url (if any)
     $matches = null;
@@ -189,10 +173,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor {
 
   /**
    * @param WebDriverCommand $command
-   *
    * @return mixed
-   *
-   * @throws WebDriverException
    */
   public function execute(WebDriverCommand $command) {
     if (!isset(self::$commands[$command->getName()])) {

@@ -13,18 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Facebook\WebDriver\Remote;
-
-use Facebook\WebDriver\Interactions\WebDriverActions;
-use Facebook\WebDriver\JavaScriptExecutor;
-use Facebook\WebDriver\WebDriver;
-use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverCommandExecutor;
-use Facebook\WebDriver\WebDriverElement;
-use Facebook\WebDriver\WebDriverNavigation;
-use Facebook\WebDriver\WebDriverOptions;
-use Facebook\WebDriver\WebDriverWait;
-
 class RemoteWebDriver implements WebDriver, JavaScriptExecutor {
   /**
    * @var HttpCommandExecutor
@@ -57,20 +45,16 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor {
    * Construct the RemoteWebDriver by a desired capabilities.
    *
    * @param string $url The url of the remote server
-   * @param DesiredCapabilities|array $desired_capabilities The desired capabilities
+   * @param DesiredCapabilities $desired_capabilities The desired capabilities
    * @param int|null $connection_timeout_in_ms
    * @param int|null $request_timeout_in_ms
-   * @param string|null $http_proxy The proxy to tunnel requests through
-   * @param int|null $http_proxy_port
    * @return RemoteWebDriver
    */
   public static function create(
     $url = 'http://localhost:4444/wd/hub',
     $desired_capabilities = null,
     $connection_timeout_in_ms = null,
-    $request_timeout_in_ms = null,
-    $http_proxy = null,
-    $http_proxy_port = null
+    $request_timeout_in_ms = null
   ) {
     $url = preg_replace('#/+$#', '', $url);
 
@@ -80,7 +64,7 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor {
       $desired_capabilities = $desired_capabilities->toArray();
     }
 
-    $executor = new HttpCommandExecutor($url, $http_proxy, $http_proxy_port);
+    $executor = new HttpCommandExecutor($url);
     if ($connection_timeout_in_ms !== null) {
       $executor->setConnectionTimeout($connection_timeout_in_ms);
     }
